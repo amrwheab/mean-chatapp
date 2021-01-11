@@ -1,0 +1,148 @@
+import { state, trigger, style, transition, animate } from '@angular/animations';
+import { Subscription } from 'rxjs';
+import { MessageService } from './../services/message.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { User } from './../shared/user';
+import { UsersService } from './../services/users.service';
+import { Component, OnInit, ViewChild, ElementRef, AfterContentChecked, OnDestroy } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Message } from '../shared/message';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { Socket } from 'ngx-socket-io';
+import { faCommentDots } from '@fortawesome/free-regular-svg-icons';
+
+@Component({
+  selector: 'app-messages',
+  templateUrl: './messages.component.html',
+  styleUrls: ['./messages.component.scss'],
+  animations: [
+    trigger('msgAni', [
+      state('void', style({transform: 'translate(300px, -300px)'})),
+      state('*', style({transform: 'translate(0, 0)'})),
+      transition('* <=> void', [
+        animate('.2s')
+      ])
+    ])
+  ]
+})
+export class MessagesComponent implements OnInit, AfterContentChecked, OnDestroy {
+
+  @ViewChild('msgBox') msgBox: ElementRef;
+
+  faChevronRight = faChevronRight;
+  userId = '';
+  messsages: Message[] = [];
+  userImg: string;
+  url: string;
+  routerObser: Subscription;
+  userObser: Subscription;
+  reqFinished = false;
+  faCommentDots = faCommentDots;
+  slideConvToggle = '0';
+  mobScreen = false;
+
+  constructor(private userSer: UsersService,
+              private actRouter: ActivatedRoute,
+              private router: Router,
+              private msgSer: MessageService,
+              private socket: Socket) { }
+
+
+  ngOnInit(): void {
+
+    this.userObser = this.userSer.getUserProf().subscribe((user: User) => {
+      this.userId = user._id;
+      this.socket.on(this.userId + 'Msg', (data: Message, id: string) => {
+        if (id === this.actRouter.snapshot.params.id) {
+          this.messsages.push(data);
+          if (this.userId !== data.user) {
+            this.socket.emit('seenMSG', this.actRouter.snapshot.params.id);
+          }
+        }
+      });
+
+      this.socket.on(this.userId + 'seenMsg', (id: string) => {
+        if (id === this.actRouter.snapshot.params.id) {
+          this.seeningMsg();
+        }
+      });
+
+      this.initParams();
+    });
+
+
+    if (window.innerWidth <= 768) {
+      this.mobScreen = true;
+      this.slideConvToggle = '-100%';
+    }
+
+  }
+
+  ngOnDestroy(): void {
+    if (this.routerObser) {
+      this.routerObser.unsubscribe();
+    }
+    if (this.userObser) {
+      this.userObser.unsubscribe();
+    }
+    location.reload();
+  }
+
+  ngAfterContentChecked(): void {
+    this.scrollChatBottom();
+    this.userImgFun();
+
+  }
+
+  initParams(): void {
+    this.routerObser = this.actRouter.params.subscribe((val) => {
+
+
+      this.scrollChatBottom();
+      this.userImgFun();
+
+      this.msgSer.getMessages(this.actRouter.snapshot.params.id).subscribe((msg) => {
+        if (msg.user1 === this.userId || msg.user2 === this.userId) {
+          this.messsages = msg.msgs;
+          if (this.messsages.length > 0) {
+            if (this.messsages[this.messsages.length - 1].user !== this.userId) {
+              this.socket.emit('seenMSG', this.actRouter.snapshot.params.id);
+            }
+          }
+
+          this.reqFinished = true;
+        } else {
+          this.router.navigate(['/']);
+        }
+      });
+    });
+  }
+
+  userImgFun(): void {
+    try {
+      this.userImg = this.msgSer.userInfo.find(ele => ele.id === this.actRouter.snapshot.params.id).imgUrl;
+    } catch { }
+  }
+
+  scrollChatBottom(): void {
+    try {
+      this.msgBox.nativeElement.scrollTop = this.msgBox.nativeElement.scrollHeight;
+    } catch (err) { }
+  }
+
+  seeningMsg(): void {
+    this.messsages.forEach(elem => {
+      elem.seen = true;
+    });
+  }
+
+  sendMsg(form: NgForm): void {
+    this.socket.emit('sendMsg', { user: this.userId, msg: form.value.msg, msgId: this.actRouter.snapshot.params.id });
+    form.reset();
+  }
+
+  slideTheConv(): void {
+    this.slideConvToggle === '0' ? this.slideConvToggle = '-100%' : this.slideConvToggle = '0';
+  }
+
+}

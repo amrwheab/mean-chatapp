@@ -1,0 +1,76 @@
+<div class="home" *ngIf="!userId && checkUser">
+  <div class="container">
+    <h1 class="welcome-head">Welcome To Our Chat App</h1>
+    <p class="welcome-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fuga eveniet deleniti blanditiis,
+      eaque quia repellat asperiores amet quod ipsa hic error impedit consectetur velit eius. Voluptate quis libero
+      totam repudiandae!Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fuga eveniet deleniti blanditiis,
+      eaque quia repellat asperiores amet quod ipsa hic error impedit consectetur velit eius. Voluptate quis libero
+      totam repudiandae!Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fuga eveniet deleniti blanditiis,
+      eaque quia repellat asperiores amet quod ipsa hic error impedit consectetur velit eius. Voluptate quis libero
+      totam repudiandae!Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fuga eveniet deleniti blanditiis,
+      eaque quia repellat asperiores amet quod ipsa hic error impedit consectetur velit eius. Voluptate quis libero
+      totam repudiandae!</p>
+    <div class="btn-contain">
+      <button mat-raised-button color="primary" (click)="popUpFun(1)">Login</button>
+      <button mat-raised-button color="primary" (click)="popUpFun(2)">Sign Up</button>
+    </div>
+
+    <div class="whats-new">
+      <div class="row">
+        <div class="col-md-6 whats-new-head">
+          <h2>Whats new in YouneChat</h2>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente at officiis, obcaecati asperiores ratione
+            molestiae aut, quod, sit suscipit laboriosam accusamus distinctio nihil. Quibusdam corporis, nam quasi
+            expedita incidunt non.</p>
+        </div>
+        <div class="offset-md-2 col-md-4 whats-new-svg">
+          <img src="assets/svg3.svg" alt="" style="width: 100%;" width="600px" height="300px">
+        </div>
+      </div>
+    </div>
+    <div class="whats-new">
+      <div class="row">
+        <div class="col-md-4 whats-new-svg">
+          <img src="assets/svg2.svg" style="width: 100%;" alt="" width="600px" height="300px">
+        </div>
+        <div class="offset-md-2 col-md-6 whats-new-head">
+          <h2>About Us</h2>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente at officiis, obcaecati asperiores ratione
+            molestiae aut, quod, sit suscipit laboriosam accusamus distinctio nihil. Quibusdam corporis, nam quasi
+            expedita incidunt non.</p>
+          <button mat-stroked-button color="primary" routerLink="/about"
+            routerLinkActive="router-link-active">More</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pop-up" *ngIf="popUpShow" #popUp>
+    <div class="pop-in-side" @fade>
+      <app-login *ngIf="loginPop"></app-login>
+      <app-signup *ngIf="signUpPop"></app-signup>
+    </div>
+  </div>
+</div>
+
+<div class="sk-chase-out" *ngIf="!checkUser" style="height: 100vh;">
+  <div class="sk-chase">
+    <div class="sk-chase-dot"></div>
+    <div class="sk-chase-dot"></div>
+    <div class="sk-chase-dot"></div>
+    <div class="sk-chase-dot"></div>
+    <div class="sk-chase-dot"></div>
+    <div class="sk-chase-dot"></div>
+  </div>
+</div>
+
+<div class="home" *ngIf="userId">
+  <app-conversations class="app-conv" [style]="'left: '+slideConvToggle+';'"></app-conversations>
+  <fa-icon [icon]="faCommentDots"
+  class="slide-icon"
+  *ngIf="mobScreen"
+  (click)="slideTheConv()"></fa-icon>
+  <div class="overlay" *ngIf="slideConvToggle === '0' && mobScreen" (click)="slideTheConv()"></div>
+  <div class="svg-chat-contain" [class.mobsvg]="mobScreen">
+    <img src="assets/chat.svg" [class.mobsvg]="mobScreen" alt="">
+  </div>
+</div>

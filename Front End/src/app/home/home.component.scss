@@ -1,0 +1,103 @@
+.home {
+  padding: 54px 0;
+  position: relative;
+  .welcome-head {
+    text-align: center;
+    font-size: 2rem;
+    padding-top: 30px;
+  }
+  .welcome-text {
+    padding-top: 20px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 1.7;
+    color: gray;
+  }
+  .svg-contain {
+    margin-top: 30px;
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: space-between;
+    img {
+      width: 50%;
+    }
+  }
+  .btn-contain {
+    text-align: center;
+    padding: 20px 0;
+    button {
+      margin-right: 10px;
+    }
+  }
+  .whats-new {
+    padding-top: 60px;
+    .whats-new-head {
+      h2 {
+        font-size: 2rem;
+      }
+      p {
+        padding-top: 20px;
+        font-size: 16px;
+        line-height: 1.7;
+        color: gray;
+      }
+    }
+  }
+  .pop-up {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba($color: #000000, $alpha: .6);
+    z-index: 999999;
+
+    .pop-in-side {
+      width: 60%;
+      background-color: white;
+      padding: 20px;
+      box-shadow: 1px 1px 10px rgba($color: #000000, $alpha: .6);
+
+      @media only screen and (max-width: 768px) {
+        width: 90%;
+      }
+      @media only screen and (max-width: 576px) {
+        width: 100%;
+      }
+    }
+  }
+
+  .svg-chat-contain {
+    padding-left: 24%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 108px);
+    img {
+      width: 400px;
+      height: 400px;
+      display: inline-block;
+      &.mobsvg {
+        width: 100%;
+      }
+    }
+
+    &.mobsvg {
+      padding-left: 0;
+    }
+  }
+
+}
+
+.overlay {
+  position: fixed;
+  width: 100%;
+  margin-top: -3px;
+  height: 101%;
+  background-color: rgba($color: #000000, $alpha: .6);
+  z-index: 997;
+}

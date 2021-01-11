@@ -1,0 +1,72 @@
+<div class="signup" [style]="'padding-top:'+paddingStyle">
+  <div class="container">
+    <div class="row">
+      <div [class.col-lg-6]="svgShow" [class.col]="!svgShow">
+        <h2>Sign Up</h2>
+        <form [formGroup]="signupForm" (submit)="signupSub()">
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input type="text" matInput formControlName="name">
+            <mat-error *ngIf="f.name.hasError('required')">Name is <strong>Required</strong></mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input type="email" matInput formControlName="email">
+            <mat-error *ngIf="f.email.hasError('required')">Email is <strong>Required</strong></mat-error>
+            <mat-error *ngIf="f.email.hasError('email')">Email pattern is not true</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Address</mat-label>
+            <input type="text" matInput formControlName="address">
+            <mat-error *ngIf="f.address.hasError('required')">Address is <strong>Required</strong></mat-error>
+          </mat-form-field>
+          <mat-form-field *ngIf="svgShow">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="gender">
+              <mat-option value="male">
+                Male
+              </mat-option>
+              <mat-option value="female">
+                Female
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.gender.hasError('required')">Gender is <strong>Required</strong></mat-error>
+          </mat-form-field>
+          <div *ngIf="!svgShow">
+            <label>Gender</label>
+            <select formControlName="gender" class="select-pop">
+              <option value="male">
+                Male
+              </option>
+              <option value="female">
+                Female
+              </option>
+            </select>
+            <mat-error *ngIf="f.gender.hasError('required') && f.gender.touched">Gender is <strong>Required</strong></mat-error>
+          </div>
+          <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input type="password" matInput formControlName="password">
+            <mat-error *ngIf="f.password.hasError('required')">Password is <strong>Required</strong></mat-error>
+            <mat-error *ngIf="f.password.hasError('minlength')">Password must be <strong>6 chars</strong> at least</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Confirm Password</mat-label>
+            <input type="password" matInput formControlName="confirmPassword">
+          </mat-form-field>
+          <mat-error *ngIf="f.password.value !== f.confirmPassword.value && f.confirmPassword.touched">Passwords aren't Equal</mat-error>
+          <mat-form-field>
+            <mat-label>Info</mat-label>
+            <textarea matInput name="info" formControlName="info"></textarea>
+          </mat-form-field>
+          <button mat-raised-button color="primary" type="submit" [disabled]="signupForm.invalid">Submit</button>
+        </form>
+        <mat-error>{{ errCase }}</mat-error>
+      </div>
+      <div class="col-lg-6" *ngIf="svgShow && !mobScreen">
+        <img src="assets/signup.jpg" style="float: right;" width="400px" height="500px" alt="">
+        <div style="clear: both;"></div>
+      </div>
+    </div>
+  </div>
+</div>

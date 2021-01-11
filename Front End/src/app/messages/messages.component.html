@@ -1,0 +1,39 @@
+<div class="messages">
+  <div class="overlay" *ngIf="slideConvToggle === '0' && mobScreen" (click)="slideTheConv()"></div>
+  <fa-icon [icon]="faCommentDots"
+  class="slide-icon"
+  *ngIf="mobScreen"
+  (click)="slideTheConv()"></fa-icon>
+  <app-conversations class="app-conv" [style]="'left: '+slideConvToggle+';'"></app-conversations>
+  <div class="msg-content" style="padding-top: 54px;" [class.mob-mar]="mobScreen">
+    <div class="msg-box" #msgBox>
+      <div class="sk-chase-out" *ngIf="!reqFinished">
+        <div class="sk-chase">
+          <div class="sk-chase-dot"></div>
+          <div class="sk-chase-dot"></div>
+          <div class="sk-chase-dot"></div>
+          <div class="sk-chase-dot"></div>
+          <div class="sk-chase-dot"></div>
+          <div class="sk-chase-dot"></div>
+        </div>
+      </div>
+      <div class="sk-chase-out" *ngIf="reqFinished && messsages.length === 0">
+        <div style="width: 300px;height: 300px;">
+          <img src="assets/nomessyet.svg" style="width: 100%;height: 100%;" alt="">
+          <p class="nomsg">No Messages Yet</p>
+        </div>
+      </div>
+      <div *ngFor="let msg of messsages; let last = last" @msgAni>
+        <div style="display: inline-block;color: transparent;" class="user-img" [class.user]="msg.user === userId" *ngIf="!last || !msg.seen">.</div>
+        <img [src]="userImg" alt="" class="user-img" [class.user]="msg.user === userId" *ngIf="last && msg.seen">
+        <div class="msg" [class.user]="msg.user === userId">{{msg.msg}}</div>
+        <div style="clear: both;"></div>
+      </div>
+    </div>
+    <form (submit)="sendMsg(sendMessage)" #sendMessage=ngForm>
+      <input type="text" class="msg-input-box" name="msg" ngModel required>
+      <button mat-mini-fab color="primary" type="submit" [disabled]="sendMessage.invalid"><fa-icon [icon]="faChevronRight"></fa-icon></button>
+    </form>
+
+  </div>
+</div>

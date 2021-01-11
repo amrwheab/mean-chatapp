@@ -1,0 +1,120 @@
+<div class="navbar">
+  <div class="container">
+    <div class="inner-nav">
+      <h2>YouneChat</h2>
+      <ul *ngIf="!mobScreen">
+        <button mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><fa-icon class="main-icon" [icon]="faHome"></fa-icon></button>
+        <button mat-button routerLink="/login" routerLinkActive="active" *ngIf="!user._id"><fa-icon class="main-icon" [icon]="faSignInAlt"></fa-icon></button>
+        <button mat-button routerLink="/signup" routerLinkActive="active" *ngIf="!user._id"><fa-icon class="main-icon" [icon]="faUserPlus"></fa-icon></button>
+        <button mat-button routerLink="/about" routerLinkActive="active" *ngIf="!user._id"><fa-icon class="main-icon" [icon]="faAddressCard"></fa-icon></button>
+        <button mat-button *ngIf="user._id" #navbr (click)="showNav=true">
+          <span class="badgee" *ngIf="friendReq.length>0">{{friendReq.length}}</span>
+          <fa-icon class="main-icon" [icon]="faBell"></fa-icon>
+        </button>
+        <button mat-button *ngIf="user._id" #newMsg (click)="showNewMess = true; newMesNavNum = 0">
+          <span class="badgee" *ngIf="totalNav > 0">{{totalNav}}</span>
+          <fa-icon class="main-icon" [icon]="faEnvelopeOpenText"></fa-icon>
+        </button>
+        <div *ngIf="user._id" class="prof-list" [matMenuTriggerFor]="menu">
+          <img [src]="user.imgUrl" class="prof-list-img">
+        </div>
+      </ul>
+      <div>
+        <form *ngIf="!mobScreen">
+          <input type="search" class="search" name="search" [(ngModel)]="search" [matAutocomplete]="auto" (input)="searchForUser()">
+          <fa-icon *ngIf="!search" [icon]="faSearch" class="search-icon"></fa-icon>
+        </form>
+      </div>
+      <button mat-stroked-button color="primary" *ngIf="mobScreen" (click)="this.showMobNav = !this.showMobNav">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="mob-nav" *ngIf="showMobNav" @slidemob #slidemob>
+  <div class="mob-navigation-bar" *ngIf="user._id">
+    <button mat-button #navbr (click)="showNav=true">
+      <span class="badgee" *ngIf="friendReq.length>0">{{friendReq.length}}</span>
+      <fa-icon class="main-icon" [icon]="faBell"></fa-icon>
+    </button>
+    <button mat-button #newMsg (click)="showNewMess = true; newMesNavNum = 0">
+      <span class="badgee" *ngIf="totalNav > 0">{{totalNav}}</span>
+      <fa-icon class="main-icon" [icon]="faEnvelopeOpenText"></fa-icon>
+    </button>
+  </div>
+  <!-- lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll -->
+  <form class="mob-form-search">
+    <input type="search" class="mob-search" name="search" [(ngModel)]="search" [matAutocomplete]="auto" (input)="searchForUser()">
+    <fa-icon *ngIf="!search" [icon]="faSearch" class="search-icon"></fa-icon>
+  </form>
+  <!-- lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll -->
+  <a (click)="showMobNav=!showMobNav" mat-menu-item routerLink="/"><fa-icon class="main-icon" [icon]="faHome"></fa-icon> Home</a>
+  <a (click)="showMobNav=!showMobNav" mat-menu-item routerLink="/login" *ngIf="!user._id"><fa-icon class="main-icon" [icon]="faSignInAlt"></fa-icon> Login</a>
+  <a (click)="showMobNav=!showMobNav" mat-menu-item routerLink="/signup" *ngIf="!user._id"><fa-icon class="main-icon" [icon]="faUserPlus"></fa-icon> Sign Up</a>
+  <a (click)="showMobNav=!showMobNav" mat-menu-item routerLink="/about" *ngIf="!user._id"><fa-icon class="main-icon" [icon]="faAddressCard"></fa-icon> About</a>
+  <a (click)="showMobNav=!showMobNav" mat-menu-item *ngIf="user._id" [routerLink]="'user/'+user._id"><fa-icon [icon]="faUserCircle"></fa-icon> User Profile</a>
+  <a (click)="showMobNav=!showMobNav" mat-menu-item *ngIf="user._id" (click)="logOut()" >Sign Out <fa-icon [icon]="faSignOutAlt"></fa-icon></a>
+</div>
+
+
+<mat-menu #menu="matMenu" yPosition="below" Position="before" class="menu">
+  <button mat-menu-item [routerLink]="'user/'+user._id"><fa-icon [icon]="faUserCircle"></fa-icon> User Profile</button>
+  <button mat-menu-item *ngIf="user._id" (click)="logOut()" >Sign Out <fa-icon [icon]="faSignOutAlt"></fa-icon></button>
+</mat-menu>
+
+<div class="overlay" *ngIf="showNav" (click)="overlayClick($event)" #overlay>
+  <div class="nav-body" [class.full-width]="mobScreen" [style]="'top:'+menuPos(1)+'px;left:'+menuPos(2)+'px'" @openNav>
+    <div *ngIf="friendReq.length>0">
+      <div class="inner-fr" *ngFor="let ele of friendReq">
+        <div class="fr-pic">
+        <img [src]="ele.pic" alt="">
+        </div>
+        <div class="fr-text">
+          <p><a class="fr-text-name" (click)="showNav=false" [routerLink]="'/user/' + ele.id" #navname>{{ele.name | titlecase}}</a> sent you a friend requist</p>
+          <button mat-flat-button color="primary" style="margin-right: 10px;" (click)="acceptFriendReq(ele.id)">Accept</button>
+          <button mat-stroked-button color="Link" (click)="rejectFriendReq(ele.id)" >Cancel</button>
+        </div>
+      </div>
+    </div>
+    <p *ngIf="friendReq.length===0">
+      no navigation yet
+    </p>
+  </div>
+</div>
+<div class="overlay" #overlay *ngIf="showNewMess" (click)="showNewMess = false">
+  <div class="nav-body" [class.full-width]="mobScreen" [style]="'top:'+newMsgPos(1)+'px;left:'+newMsgPos(2)+'px'" @openNav>
+    <div class="nav-inner-body">
+      <div *ngIf="friendInfo.length > 0">
+        <div class="inner-fr inner-fr-nav" *ngFor="let item of friendInfo; let i = index"
+        mat-ripple
+        style="cursor: pointer;"
+        (click)="showNewMess = false"
+        [routerLink]="'/messages/' + item.id"
+        >
+        <span class="badge" *ngIf="item.notSeenMsg > 0">{{item.notSeenMsg}}</span>
+          <div class="fr-pic">
+          <img [src]="item.imgUrl" style="object-fit: cover;object-position: center;" alt="">
+          </div>
+          <div class="fr-text" style="margin-top: 7px;">
+            <p><a class="fr-text-name" [routerLink]="'/user/' + item.friendId">{{item.name}}</a></p>
+            <p style="font-size: 17px;">{{item.lastMSG.msg}}</p>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="friendInfo.length === 0">no messages yet</div>
+    </div>
+  </div>
+</div>
+
+<mat-autocomplete #auto="matAutocomplete">
+  <mat-option *ngIf="search && searchedItems.length === 0">
+    <p style="font-size: x-small;">No Such A User With That Name</p>
+  </mat-option>
+  <mat-option *ngFor="let item of searchedItems" (click)="router.navigate(['user/',item._id])">
+    <div class="inner-autocomplete">
+      <img [src]="item.imgUrl" aria-hidden height="40" width="40">
+      <span>{{item.name}}</span>
+    </div>
+  </mat-option>
+</mat-autocomplete>

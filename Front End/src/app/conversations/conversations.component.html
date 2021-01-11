@@ -1,0 +1,34 @@
+<div class="friends-back">
+
+  <form>
+      <input class="search" #search type="search" placeholder="search for conversations" (input)="searchConv(search.value)">
+  </form>
+  <div class="sk-chase-out" *ngIf="!conversationDown">
+    <div class="spinner">
+      <div class="bounce1"></div>
+      <div class="bounce2"></div>
+      <div class="bounce3"></div>
+    </div>
+  </div>
+
+  <div class="sk-chase-out" *ngIf="conversationDown && friendInfo.length === 0" style="color: white;">No Conversation Yet</div>
+
+  <div class="conv-item"
+  *ngFor="let info of friendInfo; let i = index"
+  [routerLink]="'/messages/'+ info.id"
+  mat-ripple
+  [style]="'top: '+arrangElem(info.id) +'px;position: '+positionState"
+  [class.active]="router.url === '/messages/'+ info.id"
+  @fade
+  >
+
+  <span class="badge" *ngIf="info.notSeenMsg > 0">{{info.notSeenMsg}}</span>
+
+    <div class="conv-img"><img [src]="info.imgUrl" alt=""></div>
+    <div class="conv-info">
+      <h4>{{ info.name | titlecase }} <span *ngIf="info.online" class="online-sign">.</span></h4>
+      <p>{{info.lastMSG.msg}}</p>
+    </div>
+  </div>
+
+</div>

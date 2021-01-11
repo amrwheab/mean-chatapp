@@ -1,0 +1,41 @@
+<div class="login" [style]="'padding-top:'+paddingStyle">
+  <div class="container">
+    <div class="row">
+      <div [class.col-lg-6]="svgShow" [class.col]="!svgShow">
+        <h2>Log In</h2>
+        <form [formGroup]="loginForm" (submit)="loginSub()">
+          <mat-form-field class="form-field">
+            <mat-label>Email</mat-label>
+            <input type="text" matInput formControlName="email"
+                  placeholder="Ex. pat@example.com">
+            <mat-error *ngIf="f.email.hasError('email')">
+              Please enter a valid email address
+            </mat-error>
+            <mat-error *ngIf="f.email.hasError('required')">
+              Email is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <br>
+          <mat-form-field class="form-field">
+            <mat-label>Password</mat-label>
+            <input type="password" matInput formControlName="password">
+            <mat-error *ngIf="f.password.hasError('required')">
+              Password is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="f.password.hasError('minlength')">
+              Password must be <strong>6 chars</strong> at least
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <br>
+          <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">Login</button>
+          <mat-error>{{loginErr | json}}</mat-error>
+        </form>
+      </div>
+      <div class="col-md-6" *ngIf="svgShow && !mobScreen">
+        <img src="assets/login.svg" width="100%">
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+<h1 *ngIf="pageErr" style="padding-top: 100px;">{{pageErr}}</h1>
+<div *ngIf="!pageErr" class="user" style="background-image: url(assets/user_back.jpg);">
+  <div class="header">
+  <div class="container">
+      <div class="row">
+        <div class="col-lg-4">
+          <div style="width: 250px; max-height: 250px;">
+            <img [src]="user.imgUrl" alt="" width="250px" height="250px" style="height: 100%;">
+            <input type="file" (change)="changeImg($event)">
+          </div>
+        </div>
+        <div class="col-lg-8 info-side">
+          <h2>{{user.name | titlecase}}</h2>
+          <p class="user-work">{{user.info}}</p>
+          <span class="friends-num">{{user.freindList.length}} friend</span>
+          <br /><br />
+          <button mat-raised-button color="primary" *ngIf="!profile && !sentFR && !havesentFRiendReq && !friend" (click)="addFriendRequist()">Add Friend</button>
+          <button mat-flat-button color="warn" *ngIf="sentFR && !friend" (click)="cancelFriendRequist()">Cancel Friend Requist</button>
+          <button mat-raised-button color="primary" *ngIf="havesentFRiendReq && !friend" (click)="acceptFriendReq()" style="margin-right: 10px;" >Accept Friend Requist</button>
+          <button mat-flat-button color="warn" *ngIf="havesentFRiendReq && !friend" (click)="rejectRequist()">Cancel</button>
+          <br /><br />
+          <p class="help-text" *ngIf="!profile && !sentFR && !havesentFRiendReq && !friend">To Comunicate With {{user.name | titlecase}} You Sould Send Friend Requist</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

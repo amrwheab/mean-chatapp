@@ -1,0 +1,100 @@
+.messages {
+  // padding-top: 54px;
+  display: flex;
+  .msg-content {
+    margin-left: 29%;
+    padding-right: 20px;
+    width: 66%;
+    height: calc(100vh - 100px);
+    position: relative;
+
+    &.mob-mar {
+      margin: auto !important;
+      width: 100%;
+      padding: 0 20px;
+    }
+    .msg-box {
+      height: 100%;
+      padding-bottom: 50px;
+      padding-top: 22px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      .msg {
+        color: #333;
+        background-color: #e4dede;
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 18px;
+        margin: 3px 0 3px 7px;
+      }
+      .msg.user {
+        background-color: #3f51b5 !important;
+        color: white !important;
+        float: right;
+        margin-right: 15px;
+        margin: 3px 7px 3px 0 !important;
+      }
+      .user-img {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-top: 8px;
+        transition: .3s ease-out;
+      }
+      .user-img.user {
+        float: right;
+      }
+      &:hover {
+        &::-webkit-scrollbar-thumb {
+          background-color: #3f51b5;
+        }
+      }
+      &::-webkit-scrollbar {
+        width: 7px;
+        background: white;
+      }
+      &::-webkit-scrollbar-thumb {
+        width: 7px;
+        background-color: #3f51b5af;
+        border-radius: 5px;
+      }
+    }
+    form {
+      position: relative;
+      bottom: -30px;
+      width: 100%;
+      .msg-input-box {
+        height: 33px;
+        width: calc(100% - 70px);
+        margin-right: 10px;
+        border: 1px solid #3f51b5;
+        border-radius: 6px;
+        padding-right: 7px;
+        padding-left: 7px;
+        &:focus {
+          outline: none;
+          box-shadow: .5px .5px 7px #6175e9;
+        }
+      }
+    }
+  }
+}
+
+.nomsg {
+  margin-left: 35px;
+  text-align: center;
+  color: #3f51b5;
+  font-size: 1.3rem;
+  font-weight: 400;
+  text-shadow: 0.1px -0.1px grey;
+}
+
+.overlay {
+  position: fixed;
+  width: 100%;
+  margin-top: -3px;
+  height: 101%;
+  background-color: rgba($color: #000000, $alpha: .6);
+  z-index: 997;
+}
