@@ -38,6 +38,14 @@ export class LoginComponent implements OnInit {
     if (window.innerWidth <= 768) {
       this.mobScreen = true;
     }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768) {
+        this.mobScreen = true;
+      } else {
+        this.mobScreen = false;
+      }
+    });
   }
 
   get f(): {

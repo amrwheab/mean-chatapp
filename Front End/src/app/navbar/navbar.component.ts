@@ -100,16 +100,18 @@ export class NavbarComponent implements OnInit {
     this.userSer.getUserProf().subscribe((user: User) => {
       this.user = user;
 
-      // tslint:disable-next-line: prefer-for-of
-      for (let i = 0; i < this.user.freindRequists.length; i++) {
-        this.userSer.getUser(this.user.freindRequists[i]).subscribe((fre: User) => {
-          this.friendReq[i] = {
-            id: fre._id,
-            name: fre.name,
-            pic: fre.imgUrl,
-            added: true
-          };
-        });
+      if (this.user.freindRequists.length > 0) {
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < this.user.freindRequists.length; i++) {
+          this.userSer.getUser(this.user.freindRequists[i]).subscribe((fre: User) => {
+            this.friendReq[i] = {
+              id: fre._id,
+              name: fre.name,
+              pic: fre.imgUrl,
+              added: true
+            };
+          });
+        }
       }
 
       this.socket.on(user._id, (nav: FriendRequists) => {
@@ -132,6 +134,14 @@ export class NavbarComponent implements OnInit {
     if (window.innerWidth <= 768) {
       this.mobScreen = true;
     }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768) {
+        this.mobScreen = true;
+      } else {
+        this.mobScreen = false;
+      }
+    });
   }
 
   messageNav(): void {
@@ -202,6 +212,9 @@ export class NavbarComponent implements OnInit {
 
   newMsgPos(e: number): number {
     if (e === 1) {
+      if (this.mobScreen) {
+        return this.newMsg._elementRef.nativeElement.offsetTop + this.newMsg._elementRef.nativeElement.clientHeight + 50;
+      }
       return this.newMsg._elementRef.nativeElement.offsetTop + this.newMsg._elementRef.nativeElement.clientHeight + 5;
     }else {
       if (this.mobScreen) {

@@ -172,3 +172,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   position: relative;
   transition: .2s ease-out;
 }
+
+.user .mat-focus-indicator.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted.add-friend-button {
+  width: 250px;
+  height: 50px;
+}
+
+.user .mat-card-header-text {
+  margin: 0;
+}

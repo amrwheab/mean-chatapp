@@ -76,6 +76,16 @@ export class MessagesComponent implements OnInit, AfterContentChecked, OnDestroy
       this.slideConvToggle = '-100%';
     }
 
+    window.addEventListener('resize', () => {
+    if (window.innerWidth <= 768) {
+      this.mobScreen = true;
+      this.slideConvToggle = '-100%';
+    } else {
+      this.mobScreen = false;
+      this.slideConvToggle = '0';
+    }
+    });
+
   }
 
   ngOnDestroy(): void {

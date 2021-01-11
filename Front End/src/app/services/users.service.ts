@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,7 +10,7 @@ import { Socket } from 'ngx-socket-io';
 export class UsersService {
 
 
-  private backurl = 'http://localhost:3000';
+  private backurl = environment.backurl;
 
   constructor(private http: HttpClient, private socket: Socket) {
     this.socket.emit('getConnected' , localStorage.getItem('user'));
@@ -25,6 +26,10 @@ export class UsersService {
 
   getUser(id: string): Observable<any> {
     return this.http.get(this.backurl + '/users/getuser/' + id);
+  }
+
+  getUserWithFriends(id: string): Observable<any> {
+    return this.http.get(this.backurl + '/users/getuserwithfriends/' + id);
   }
 
   changImg(id: string, file: FormData): Observable<any> {

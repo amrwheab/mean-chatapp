@@ -1,25 +1,63 @@
 <h1 *ngIf="pageErr" style="padding-top: 100px;">{{pageErr}}</h1>
-<div *ngIf="!pageErr" class="user" style="background-image: url(assets/user_back.jpg);">
+<div *ngIf="!pageErr" class="user">
+
+  <div class="sk-chase-out" *ngIf="!checkUser" style="height: 90vh;">
+    <div class="sk-chase">
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+    </div>
+  </div>
+
   <div class="header">
   <div class="container">
       <div class="row">
         <div class="col-lg-4">
-          <div style="width: 250px; max-height: 250px;">
-            <img [src]="user.imgUrl" alt="" width="250px" height="250px" style="height: 100%;">
-            <input type="file" (change)="changeImg($event)">
+          <div style="width: 250px; height: 250px; position: relative;" [class.margin-to-center]="mobScreen">
+            <img [src]="user.imgUrl" class="user-img" alt="">
+            <button mat-icon-button [matMenuTriggerFor]="menu" style="position: absolute;" *ngIf="profile">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item color="primary" (click)="changePimg.click()">Change</button>
+            </mat-menu>
+            <input type="file" hidden #changePimg (change)="changeImg($event)">
           </div>
         </div>
-        <div class="col-lg-8 info-side">
+        <div class="col-lg-4 info-side" [class.alien-center]="mobScreen">
           <h2>{{user.name | titlecase}}</h2>
           <p class="user-work">{{user.info}}</p>
           <span class="friends-num">{{user.freindList.length}} friend</span>
           <br /><br />
-          <button mat-raised-button color="primary" *ngIf="!profile && !sentFR && !havesentFRiendReq && !friend" (click)="addFriendRequist()">Add Friend</button>
+          <p class="help-text" *ngIf="!profile && !sentFR && !havesentFRiendReq && !friend">To Comunicate With {{user.name | titlecase}} You Sould Send Friend Requist</p>
+          <button mat-raised-button class="add-friend-button" color="primary" *ngIf="!profile && !sentFR && !havesentFRiendReq && !friend" (click)="addFriendRequist()">Add Friend</button>
           <button mat-flat-button color="warn" *ngIf="sentFR && !friend" (click)="cancelFriendRequist()">Cancel Friend Requist</button>
           <button mat-raised-button color="primary" *ngIf="havesentFRiendReq && !friend" (click)="acceptFriendReq()" style="margin-right: 10px;" >Accept Friend Requist</button>
           <button mat-flat-button color="warn" *ngIf="havesentFRiendReq && !friend" (click)="rejectRequist()">Cancel</button>
           <br /><br />
-          <p class="help-text" *ngIf="!profile && !sentFR && !havesentFRiendReq && !friend">To Comunicate With {{user.name | titlecase}} You Sould Send Friend Requist</p>
+        </div>
+        <div class="col-lg-4 friendlist-area">
+          <h2>Friend List</h2>
+          <p *ngIf="userFriends.length === 0"><span *ngIf="user.gender === 'male'">He</span> <span *ngIf="user.gender !== 'male'">She</span> hasen't friends Yet</p>
+          <div class="row" *ngIf="userFriends.length > 0">
+          <div *ngFor="let friend of userFriends" class="col-lg-6 col-md-4 col-sm-6 col-6">
+              <mat-card>
+                <mat-card-header>
+                  <mat-card-title><a [routerLink]="'/user/'+friend._id">{{friend.name | titlecase}}</a></mat-card-title>
+                  <mat-card-subtitle>{{friend.address}}</mat-card-subtitle>
+                </mat-card-header>
+                <img mat-card-image [src]="friend.imgUrl">
+                <mat-card-content>
+                  <p>{{friend.info}}</p>
+                </mat-card-content>
+              </mat-card>
+            </div>
+
+          </div>
+
         </div>
       </div>
     </div>

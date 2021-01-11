@@ -29,6 +29,8 @@ export class UserComponent implements OnInit, OnDestroy {
   freindList: [],
   online: false};
 
+  userFriends = [];
+
   pageErr: string;
   profile = false;
   sentFR = '';
@@ -36,27 +38,32 @@ export class UserComponent implements OnInit, OnDestroy {
   friend = '';
   visitorId = '';
 
+  mobScreen = false;
+  checkUser = false;
+
   userOb: Subscription;
 
   constructor(private userSer: UsersService,
-              private router: Router,
               private actRoute: ActivatedRoute,
               private socket: Socket,
+              private router: Router,
               private socketSer: SocketService) { }
 
   ngOnInit(): void {
-    this.actRoute.params.subscribe(val => {
-      this.url = this.router.url.slice(6);
-      this.userOb = this.userSer.getUser(this.url).subscribe((user: User) => {
-        this.user = user;
+    this.userOb = this.actRoute.params.subscribe(val => {
+      this.url = val.id;
+      this.userSer.getUserWithFriends(this.url).subscribe((res: any) => {
+        this.user = res.user;
+        this.userFriends = res.userFriends;
         this.userSer.getUserProf().subscribe((userCh: User) => {
           this.visitorId = userCh._id;
-          if (user._id === userCh._id) {
+          this.checkUser = true;
+          if (res.user._id === userCh._id) {
             this.profile = true;
           }else {
-            this.sentFR = user.freindRequists.find(ele => ele === userCh._id );
-            this.havesentFRiendReq = userCh.freindRequists.find(ele => ele === user._id);
-            const friendCheck = user.freindList.find(ele => ele.userId === userCh._id );
+            this.sentFR = res.user.freindRequists.find(ele => ele === userCh._id );
+            this.havesentFRiendReq = userCh.freindRequists.find(ele => ele === res.user._id);
+            const friendCheck = res.user.freindList.find(ele => ele.userId === userCh._id );
             if (friendCheck) {
               this.friend = friendCheck.userId;
             }
@@ -90,6 +97,17 @@ export class UserComponent implements OnInit, OnDestroy {
       this.socket.on('cancelFR', () => this.sentFR = '');
     });
 
+    if (window.innerWidth <= 992) {
+      this.mobScreen = true;
+    }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 992) {
+        this.mobScreen = true;
+      } else {
+        this.mobScreen = false;
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -107,7 +125,11 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   addFriendRequist(): void {
-    this.socket.emit('addFriend', {visitorId: this.visitorId, userId: this.url});
+    if (this.visitorId) {
+      this.socket.emit('addFriend', {visitorId: this.visitorId, userId: this.url});
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
   cancelFriendRequist(): void {

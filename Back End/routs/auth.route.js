@@ -91,7 +91,6 @@ router.get('/:id', (req, res, next) => {
 router.post('/register', (req, res, next) => {
   console.log(req.body)
   User.findOne({email: req.body.email}).then(user => {
-    console.log(user)
     if (user) {
       res.status(400).json('user is already exsits')
     }else {
@@ -152,9 +151,24 @@ router.get('/getuser/:id', (req, res, naxt) => {
   })
 });
 
+router.get('/getuserwithfriends/:id', async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    let userFriends = [];
+    for (let i = 0; i < user.freindList.length; i++) {
+      userFriends.push(await User.findById(user.freindList[i].userId).select('name info imgUrl address'))
+    }
+
+    res.status(200).json({user: user, userFriends: userFriends});
+  } catch(err) {
+    res.status(400).json('user not found')
+  }
+  
+});
+
 router.post('/changeimg', upload.single('file'), (req, res, next) => {
   res.send(req.file)
-})
+});
 
 router.get('/searchUser/:name', (req, res, next) => {
     const name = req.params.name;
