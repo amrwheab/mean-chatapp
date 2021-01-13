@@ -4,7 +4,7 @@ import { MessageService } from './../services/message.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from './../shared/user';
 import { UsersService } from './../services/users.service';
-import { Component, OnInit, ViewChild, ElementRef, AfterContentChecked, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterContentChecked, OnDestroy, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Message } from '../shared/message';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
@@ -40,12 +40,15 @@ export class MessagesComponent implements OnInit, AfterContentChecked, OnDestroy
   faCommentDots = faCommentDots;
   slideConvToggle = '0';
   mobScreen = false;
+  scrollAccestant = 0;
+  loadingNewMsg = false;
 
   constructor(private userSer: UsersService,
               private actRouter: ActivatedRoute,
               private router: Router,
               private msgSer: MessageService,
-              private socket: Socket) { }
+              private socket: Socket,
+              private chdr: ChangeDetectorRef) { }
 
 
   ngOnInit(): void {
@@ -99,28 +102,26 @@ export class MessagesComponent implements OnInit, AfterContentChecked, OnDestroy
   }
 
   ngAfterContentChecked(): void {
-    this.scrollChatBottom();
     this.userImgFun();
-
+    this.chdr.detectChanges();
   }
 
   initParams(): void {
     this.routerObser = this.actRouter.params.subscribe((val) => {
 
-
-      this.scrollChatBottom();
       this.userImgFun();
 
-      this.msgSer.getMessages(this.actRouter.snapshot.params.id).subscribe((msg) => {
+      this.msgSer.getMessages(val.id).subscribe((msg) => {
+        this.reqFinished = true;
+
         if (msg.user1 === this.userId || msg.user2 === this.userId) {
           this.messsages = msg.msgs;
           if (this.messsages.length > 0) {
             if (this.messsages[this.messsages.length - 1].user !== this.userId) {
-              this.socket.emit('seenMSG', this.actRouter.snapshot.params.id);
+              this.socket.emit('seenMSG', val.id);
             }
           }
 
-          this.reqFinished = true;
         } else {
           this.router.navigate(['/']);
         }
@@ -132,12 +133,6 @@ export class MessagesComponent implements OnInit, AfterContentChecked, OnDestroy
     try {
       this.userImg = this.msgSer.userInfo.find(ele => ele.id === this.actRouter.snapshot.params.id).imgUrl;
     } catch { }
-  }
-
-  scrollChatBottom(): void {
-    try {
-      this.msgBox.nativeElement.scrollTop = this.msgBox.nativeElement.scrollHeight;
-    } catch (err) { }
   }
 
   seeningMsg(): void {
@@ -153,6 +148,18 @@ export class MessagesComponent implements OnInit, AfterContentChecked, OnDestroy
 
   slideTheConv(): void {
     this.slideConvToggle === '0' ? this.slideConvToggle = '-100%' : this.slideConvToggle = '0';
+  }
+
+  scrollMsgBox(): void {
+    if (this.msgBox.nativeElement.scrollTop === 0) {
+      this.loadingNewMsg = true;
+      this.scrollAccestant += 1873;
+      this.msgSer.getOlderMessages(this.actRouter.snapshot.params.id, this.messsages[0].time.toString())
+      .subscribe((res: Message[]) => {
+        this.messsages.unshift(...res);
+        this.loadingNewMsg = false;
+      });
+    }
   }
 
 }

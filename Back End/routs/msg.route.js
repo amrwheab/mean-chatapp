@@ -5,10 +5,22 @@ const jwt = require('jsonwebtoken')
 
 router.get('/getmsg/:id', (req, res, next) => {
   Messages.findById(req.params.id).then(msg => {
+    msg.msgs = msg.msgs.slice(-50);
     res.status(200).json(msg)
   }).catch(err => {
     res.status(400).json(err)
   })
+});
+
+router.get('/getoldermessages/:id', async (req, res, next) => {
+  try {
+    const messages = await Messages.findById(req.params.id);
+    const index = messages.msgs.findIndex(ele => ele.time === parseInt(req.query.msgId));
+    messages.msgs = messages.msgs.slice(0, index);
+    res.status(200).json(messages.msgs.slice(-50));
+  } catch(err) {
+    res.status(400).json(err)
+  }
 })
 
 router.get('/getconv/:token', (req, res, next) => {

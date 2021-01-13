@@ -6,7 +6,7 @@
   (click)="slideTheConv()"></fa-icon>
   <app-conversations class="app-conv" [style]="'left: '+slideConvToggle+';'"></app-conversations>
   <div class="msg-content" style="padding-top: 54px;" [class.mob-mar]="mobScreen">
-    <div class="msg-box" #msgBox>
+    <div class="msg-box" #msgBox (scroll)="scrollMsgBox()" [scrollTop]="msgBox.scrollHeight - scrollAccestant">
       <div class="sk-chase-out" *ngIf="!reqFinished">
         <div class="sk-chase">
           <div class="sk-chase-dot"></div>
@@ -22,6 +22,11 @@
           <img src="assets/nomessyet.svg" style="width: 100%;height: 100%;" alt="">
           <p class="nomsg">No Messages Yet</p>
         </div>
+      </div>
+      <div class="spinner" *ngIf="loadingNewMsg">
+        <div class="bounce1" style="background-color: #3f51b5;"></div>
+        <div class="bounce2" style="background-color: #3f51b5;"></div>
+        <div class="bounce3" style="background-color: #3f51b5;"></div>
       </div>
       <div *ngFor="let msg of messsages; let last = last" @msgAni>
         <div style="display: inline-block;color: transparent;" class="user-img" [class.user]="msg.user === userId" *ngIf="!last || !msg.seen">.</div>

@@ -20,6 +20,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ConversationsComponent } from './conversations/conversations.component';
 import { MessagesComponent } from './messages/messages.component';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { ScrollingDirective } from './scrolling.directive';
 
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
@@ -37,6 +38,7 @@ registerLocaleData(en);
     UserComponent,
     ConversationsComponent,
     MessagesComponent,
+    ScrollingDirective,
   ],
   imports: [
     BrowserModule,
