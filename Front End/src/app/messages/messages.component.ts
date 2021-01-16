@@ -110,6 +110,7 @@ export class MessagesComponent implements OnInit, AfterContentChecked, OnDestroy
     this.routerObser = this.actRouter.params.subscribe((val) => {
 
       this.userImgFun();
+      this.scrollAccestant = 0;
 
       this.msgSer.getMessages(val.id).subscribe((msg) => {
         this.reqFinished = true;
