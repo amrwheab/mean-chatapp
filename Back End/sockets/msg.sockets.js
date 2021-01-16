@@ -25,6 +25,10 @@ module.exports = (io) => {
           io.emit(msg.user2+'seenMsg', id);
         })
       })
+    });
+
+    socket.on('sendwritenow', data => {
+      io.emit(data.user + 'writenow', data.msgUrl);
     })
   })
 }

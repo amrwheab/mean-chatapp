@@ -36,7 +36,8 @@
       </div>
     </div>
     <form (submit)="sendMsg(sendMessage)" #sendMessage=ngForm>
-      <input type="text" class="msg-input-box" name="msg" ngModel required>
+      <p class="writing-now" *ngIf="writingNow">Writing Now...</p>
+      <input type="text" class="msg-input-box" name="msg" ngModel required (input)="sendWriteNow()">
       <button mat-mini-fab color="primary" type="submit" [disabled]="sendMessage.invalid"><fa-icon [icon]="faChevronRight"></fa-icon></button>
     </form>
 

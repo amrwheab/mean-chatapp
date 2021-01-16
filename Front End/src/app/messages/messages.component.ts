@@ -42,6 +42,9 @@ export class MessagesComponent implements OnInit, AfterContentChecked, OnDestroy
   mobScreen = false;
   scrollAccestant = 0;
   loadingNewMsg = false;
+  writingNow = false;
+  user1 = '';
+  user2 = '';
 
   constructor(private userSer: UsersService,
               private actRouter: ActivatedRoute,
@@ -67,6 +70,17 @@ export class MessagesComponent implements OnInit, AfterContentChecked, OnDestroy
       this.socket.on(this.userId + 'seenMsg', (id: string) => {
         if (id === this.actRouter.snapshot.params.id) {
           this.seeningMsg();
+        }
+      });
+
+      this.socket.on(this.userId + 'writenow', (id: string) => {
+        if (id === this.actRouter.snapshot.params.id) {
+          if (!this.writingNow) {
+            this.writingNow = true;
+            setTimeout(() => {
+              this.writingNow = false;
+            }, 2000);
+          }
         }
       });
 
@@ -114,6 +128,8 @@ export class MessagesComponent implements OnInit, AfterContentChecked, OnDestroy
 
       this.msgSer.getMessages(val.id).subscribe((msg) => {
         this.reqFinished = true;
+        this.user1 = msg.user1;
+        this.user2 = msg.user2;
 
         if (msg.user1 === this.userId || msg.user2 === this.userId) {
           this.messsages = msg.msgs;
@@ -160,6 +176,14 @@ export class MessagesComponent implements OnInit, AfterContentChecked, OnDestroy
         this.messsages.unshift(...res);
         this.loadingNewMsg = false;
       });
+    }
+  }
+
+  sendWriteNow(): void {
+    if (this.user1 === this.userId) {
+      this.socket.emit('sendwritenow', {user: this.user2, msgUrl: this.actRouter.snapshot.params.id});
+    } else {
+      this.socket.emit('sendwritenow', {user: this.user1, msgUrl: this.actRouter.snapshot.params.id});
     }
   }
 
